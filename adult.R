@@ -6,9 +6,9 @@ writeLines("data loaded!\n")
 
 adult.names <- c("age","workclass","fnlwgt","education","education.num","marital.status","occupation","relationship","race","sex","capital.gain","capital.loss","hours.per.week","native.country", "fifty.k.status")
 
-set.nas <- function(frame, colname) {
+set.nas <- function(frame, colname, na.char = ' ?') {
   index <- grep(paste('^', colname, '$', sep = ""), colnames(frame))
-  frame[frame[,index] == ' ?', index] <- NA
+  frame[frame[,index] == na.char, index] <- NA
   frame[,index] <- droplevels(frame[,index])
   frame
 }
