@@ -17,19 +17,18 @@ prep.data.frame <- function(frame) {
   #set colnames
   colnames(frame) <- adult.names
 
-  #remove useless features
-  frame <- frame[, -c(3,5)]
 
   #clean NAs
   frame <- set.nas(frame, 'workclass')
   frame <- set.nas(frame, 'occupation')
   frame <- set.nas(frame, 'native.country')
 
+
   # remove data points without occupation or workclass
   frame <- frame[!(is.na(frame$occupation) & is.na(frame$workclass)), ]
 
   #remove data points without country
-  frame <- frame[-(is.na(frame$native.country)), ]
+  frame <- frame[!(is.na(frame$native.country)), ]
 
   # standardize fifty.k.status
   levels(frame$fifty.k.status) <- c(" <=50K", " >50K")
