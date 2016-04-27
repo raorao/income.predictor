@@ -1,4 +1,4 @@
-setwd("~/Documents/datascience")
+setwd("./")
 
 adult.data <- read.csv('adult.data', header = F)
 adult.test <- read.csv('adult.test', header = F, comment.char = '|')
