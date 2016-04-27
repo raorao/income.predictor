@@ -35,6 +35,28 @@ prep.data.frame <- function(frame) {
   #remove data points without occupation
   frame <- frame[!(is.na(frame$occupation)), ]
 
+  #convert education to ordinal value
+  frame$education = ordered(
+    frame$education, levels= c(
+      " Preschool",
+      " 1st-4th",
+      " 5th-6th",
+      " 7th-8th",
+      " 9th",
+      " 10th",
+      " 11th",
+      " 12th",
+      " HS-grad",
+      " Prof-school",
+      " Assoc-acdm",
+      " Assoc-voc",
+      " Some-college",
+      " Bachelors",
+      " Masters",
+      " Doctorate"
+    )
+  )
+
   # standardize fifty.k.status
   levels(frame$fifty.k.status) <- c(" <=50K", " >50K")
 
