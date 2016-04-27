@@ -16,6 +16,20 @@ set.nas <- function(frame, colname, na.char = ' ?') {
   frame
 }
 
+calculate.hour.category <- function(hourValue) {
+  if (hourValue > 60) {
+    'over-employed'
+  } else if (hourValue > 40) {
+    'with-overtime'
+  } else if (hourValue == 40) {
+    'standard'
+  } else if (hourValue > 25) {
+    'part-time'
+  } else {
+    'under-employed'
+  }
+}
+
 prep.data.frame <- function(frame) {
   #set colnames
   colnames(frame) <- adult.names
@@ -80,8 +94,31 @@ prep.data.frame <- function(frame) {
 
   frame$american.native <- (frame$native.country == ' United-States')
 
+
+  frame$hours.per.week.category <- sapply(frame$hours.per.week, calculate.hour.category)
+
+  frame$hours.per.week.category <- ordered(
+    frame$hours.per.week.category,
+    levels = c(
+      "over-employed",
+      "with-overtime",
+      "standard",
+      "part-time",
+      "under-employed"
+    )
+  )
+
   # prune to only necessary features
-  drops <- c("workclass", "fnlwgt","education.num","marital.status","relationship", 'native.country')
+  drops <- c(
+    "workclass",
+    "fnlwgt",
+    "education.num",
+    "marital.status",
+    "relationship",
+    'native.country',
+    "hours.per.week"
+  )
+
   frame <- frame[,!(colnames(frame) %in% drops)]
   frame
 }
@@ -99,6 +136,7 @@ writeLines("data successfully cleaned!\n")
 writeLines('summary!\n')
 summary(adult.data)
 
+writeLines('generating a model!\n')
 adult.rf.model = randomForest(fifty.k.status ~ ., data = adult.data1)
 
 pdf("adults.pdf")
