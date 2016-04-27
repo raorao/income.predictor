@@ -100,6 +100,30 @@ prep.data.frame <- function(frame) {
     complicated = c(' Married-spouse-absent', ' Separated', ' Divorced', ' Widowed')
   )
 
+  # create blue.white.collar feature
+  frame$blue.white.collar <- frame$occupation
+  levels(frame$blue.white.collar) <- list(
+    blue.collar = c(
+      " Transport-moving",
+      " Protective-serv",
+      " Priv-house-serv",
+      " Other-service",
+      " Machine-op-inspct",
+      " Handlers-cleaners",
+      " Farming-fishing",
+      " Craft-repair",
+      " Armed-Forces"
+    ),
+
+    white.collar = c(
+      " Tech-support",
+      " Sales",
+      " Prof-specialty",
+      " Exec-managerial",
+      " Adm-clerical"
+    )
+  )
+
   # create workclass.cleaned feature
   frame$workclass.cleaned <- frame$workclass
   levels(frame$workclass.cleaned) <- list(
@@ -147,7 +171,8 @@ prep.data.frame <- function(frame) {
     "hours.per.week",
     "capital.loss",
     "capital.gain",
-    "capital.aggregate.gains"
+    "capital.aggregate.gains",
+    "occupation"
   )
 
   frame <- frame[,!(colnames(frame) %in% drops)]
