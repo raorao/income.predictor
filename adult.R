@@ -41,6 +41,19 @@ prep.data.frame <- function(frame) {
     complicated = c(' Married-spouse-absent', ' Separated', ' Divorced', ' Widowed')
   )
 
+  # create workclass.cleaned feature
+  frame$workclass.cleaned = frame$workclass
+  levels(frame$workclass.cleaned) <- list(
+    government = c(' Federal-gov', ' Local-gov', ' State-gov'),
+    self.employed = c(' Self-emp-inc', ' Self-emp-not-inc'),
+    never.worked = c(' Never-worked'),
+    without.pay = c(' Without-pay'),
+    private = c(' Private')
+  )
+
+  # prune to only necessary features
+  frame <- frame[, -c(2,3,5,6,8)]
+
   frame
 }
 
