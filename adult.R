@@ -23,18 +23,20 @@ prep.data.frame <- function(frame) {
   frame <- set.nas(frame, 'occupation')
   frame <- set.nas(frame, 'native.country')
 
-
   # remove data points without occupation or workclass
   frame <- frame[!(is.na(frame$occupation) & is.na(frame$workclass)), ]
 
   #remove data points without country
   frame <- frame[!(is.na(frame$native.country)), ]
 
+  #remove data points without occupation
+  frame <- frame[!(is.na(frame$occupation)), ]
+
   # standardize fifty.k.status
   levels(frame$fifty.k.status) <- c(" <=50K", " >50K")
 
   # create martal.status.cleaned feature
-  frame$marital.status.cleaned = frame$marital.status
+  frame$marital.status.cleaned <- frame$marital.status
   levels(frame$marital.status.cleaned) <- list(
     never.married = c(' Never-married'),
     married = c(' Married-civ-spouse', ' Married-AF-spouse'),
@@ -42,7 +44,7 @@ prep.data.frame <- function(frame) {
   )
 
   # create workclass.cleaned feature
-  frame$workclass.cleaned = frame$workclass
+  frame$workclass.cleaned <- frame$workclass
   levels(frame$workclass.cleaned) <- list(
     government = c(' Federal-gov', ' Local-gov', ' State-gov'),
     self.employed = c(' Self-emp-inc', ' Self-emp-not-inc'),
@@ -51,9 +53,11 @@ prep.data.frame <- function(frame) {
     private = c(' Private')
   )
 
-  # prune to only necessary features
-  frame <- frame[, -c(2,3,5,6,8)]
+  frame$american.native <- (frame$native.country == ' United-States')
 
+  # prune to only necessary features
+  drops <- c("workclass", "fnlwgt","education.num","marital.status","relationship", 'native.country')
+  frame <- frame[,!(colnames(frame) %in% drops)]
   frame
 }
 
@@ -63,3 +67,8 @@ writeLines("data successfully cleaned!\n")
 
 writeLines('summary!\n')
 summary(adult.data)
+
+require('randomForest')
+
+adult.rf.model = randomForest(fifty.k.status ~ ., data = adult.test)
+varImpPlot(adult.rf.model)
