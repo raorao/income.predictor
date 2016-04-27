@@ -3,6 +3,8 @@ setwd("./")
 require('randomForest')
 require('caret')
 
+set.seed(27)
+
 adult.data <- read.csv('adult.data', header = F)
 adult.test <- read.csv('adult.test', header = F, comment.char = '|')
 writeLines("data loaded!\n")
@@ -162,11 +164,16 @@ adult.data2 <- adult.data[-partition, ]
 
 writeLines("data successfully cleaned!\n")
 
-writeLines('summary!\n')
-summary(adult.data)
+# writeLines('summary!\n')
+# summary(adult.data)
 
 writeLines('generating a model!\n')
-adult.rf.model = randomForest(fifty.k.status ~ ., data = adult.data1)
+adult.rf.model = randomForest(
+  fifty.k.status ~ .,
+  data = adult.data1,
+  importance=TRUE,
+  mtry = 3
+)
 
 pdf("adults.pdf")
 varImpPlot(adult.rf.model)
@@ -174,4 +181,12 @@ dev.off()
 
 adult.rf.predictions <- predict(adult.rf.model, adult.data2, type="response")
 
-print(confusionMatrix(adult.rf.predictions, adult.data2$fifty.k.status))
+print(confusionMatrix(adult.rf.predictions, adult.data2$fifty.k.status, positive = " >50K"))
+
+precision <- posPredValue(adult.rf.predictions, adult.data2$fifty.k.status)
+recall <- sensitivity(adult.rf.predictions, adult.data2$fifty.k.status)
+
+F1 <- (2 * precision * recall) / (precision + recall)
+
+writeLines("your F1 is...!\n")
+print(F1)
