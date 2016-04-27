@@ -35,9 +35,9 @@ prep.data.frame <- function(frame) {
   # create martal.status.cleaned feature
   frame$marital.status.cleaned = frame$marital.status
   levels(frame$marital.status.cleaned) <- list(
-    never.married = c('Never-married'),
-    married = c('Married-civ-spouse', 'Married-AF-spouse'),
-    complicated = c('Married-spouse-absent', 'Separated', 'Divorced', 'Widowed')
+    never.married = c(' Never-married'),
+    married = c(' Married-civ-spouse', ' Married-AF-spouse'),
+    complicated = c(' Married-spouse-absent', ' Separated', ' Divorced', ' Widowed')
   )
 
   frame
