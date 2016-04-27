@@ -2,6 +2,8 @@ setwd("./")
 
 adult.data <- read.csv('adult.data', header = F)
 adult.test <- read.csv('adult.test', header = F, comment.char = '|')
+writeLines("data loaded!\n")
+
 adult.names <- c("age","workclass","fnlwgt","education","education.num","marital.status","occupation","relationship","race","sex","capital.gain","capital.loss","hours.per.week","native.country", "fifty.k.status")
 
 set.nas <- function(frame, colname) {
@@ -45,6 +47,7 @@ prep.data.frame <- function(frame) {
 
 adult.data <- prep.data.frame(adult.data)
 adult.test <- prep.data.frame(adult.test)
+writeLines("data successfully cleaned!\n")
 
-
-# adult.sample <- adult.data[sample(1:nrow(adult.data), 100),]
+writeLines('summary!\n')
+summary(adult.data)
