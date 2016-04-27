@@ -30,6 +30,22 @@ calculate.hour.category <- function(hourValue) {
   }
 }
 
+calculate.aggregate.gains <- function(median.gain) {
+  function(gain) {
+    if (gain == 99999) {
+      "99999+"
+    } else if (gain > median.gain) {
+      "more-than-median"
+    } else if (gain > 0) {
+      "less-than-median"
+    } else if (gain == 0) {
+      "none"
+    } else {
+      "lost"
+    }
+  }
+}
+
 prep.data.frame <- function(frame) {
   #set colnames
   colnames(frame) <- adult.names
@@ -97,6 +113,16 @@ prep.data.frame <- function(frame) {
 
   frame$hours.per.week.category <- sapply(frame$hours.per.week, calculate.hour.category)
 
+  frame$capital.aggregate.gains <- (frame$capital.gain - frame$capital.loss)
+  frame$capital.aggregate.gains.category <- ordered(
+    sapply(
+      frame$capital.aggregate.gains,
+      calculate.aggregate.gains(median(frame$capital.aggregate.gains))
+    ),
+    c("lost", "none", "less-than-median", "more-than-median", "99999+")
+  )
+
+
   frame$hours.per.week.category <- ordered(
     frame$hours.per.week.category,
     levels = c(
@@ -116,7 +142,10 @@ prep.data.frame <- function(frame) {
     "marital.status",
     "relationship",
     'native.country',
-    "hours.per.week"
+    "hours.per.week",
+    "capital.loss",
+    "capital.gain",
+    "capital.aggregate.gains"
   )
 
   frame <- frame[,!(colnames(frame) %in% drops)]
