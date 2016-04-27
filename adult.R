@@ -155,9 +155,9 @@ prep.data.frame <- function(frame) {
 adult.data <- prep.data.frame(adult.data)
 adult.test <- prep.data.frame(adult.test)
 
-partition <- sample(1:nrow(adult.data), 0.5*nrow(adult.data))
-adult.data1 <- adult.data[sample(1:nrow(adult.data), 0.5*nrow(adult.data)), ]
-adult.data2 <- adult.data[-sample(1:nrow(adult.data), 0.5*nrow(adult.data)), ]
+partition <- sample(1:nrow(adult.data), 0.7*nrow(adult.data))
+adult.data1 <- adult.data[partition, ]
+adult.data2 <- adult.data[-partition, ]
 
 
 writeLines("data successfully cleaned!\n")
@@ -172,6 +172,6 @@ pdf("adults.pdf")
 varImpPlot(adult.rf.model)
 dev.off()
 
-adult.rf.predictions <- predict(adult.rf.model, adult.test, type="response")
+adult.rf.predictions <- predict(adult.rf.model, adult.data2, type="response")
 
-print(confusionMatrix(adult.rf.predictions, adult.test$fifty.k.status))
+print(confusionMatrix(adult.rf.predictions, adult.data2$fifty.k.status))
