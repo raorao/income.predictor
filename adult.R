@@ -1,5 +1,8 @@
 setwd("./")
 
+require('randomForest')
+require('caret')
+
 adult.data <- read.csv('adult.data', header = F)
 adult.test <- read.csv('adult.test', header = F, comment.char = '|')
 writeLines("data loaded!\n")
@@ -63,12 +66,23 @@ prep.data.frame <- function(frame) {
 
 adult.data <- prep.data.frame(adult.data)
 adult.test <- prep.data.frame(adult.test)
+
+partition <- sample(1:nrow(adult.data), 0.5*nrow(adult.data))
+adult.data1 <- adult.data[sample(1:nrow(adult.data), 0.5*nrow(adult.data)), ]
+adult.data2 <- adult.data[-sample(1:nrow(adult.data), 0.5*nrow(adult.data)), ]
+
+
 writeLines("data successfully cleaned!\n")
 
 writeLines('summary!\n')
 summary(adult.data)
 
-require('randomForest')
+adult.rf.model = randomForest(fifty.k.status ~ ., data = adult.data1)
 
-adult.rf.model = randomForest(fifty.k.status ~ ., data = adult.test)
+pdf("adults.pdf")
 varImpPlot(adult.rf.model)
+dev.off()
+
+adult.rf.predictions <- predict(adult.rf.model, adult.test, type="response")
+
+print(confusionMatrix(adult.rf.predictions, adult.test$fifty.k.status))
