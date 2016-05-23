@@ -179,7 +179,8 @@ prep.data.frame <- function(frame) {
   frame
 }
 
-adult.data <- prep.data.frame(adult.data)
+original.data <- adult.data
+adult.data <- prep.data.frame(original.data)
 adult.test <- prep.data.frame(adult.test)
 
 partition <- sample(1:nrow(adult.data), 0.7*nrow(adult.data))
